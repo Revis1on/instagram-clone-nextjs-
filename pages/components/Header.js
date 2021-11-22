@@ -9,11 +9,14 @@ import {
   HomeIcon,
   UserGroupIcon,
 } from "@heroicons/react/outline";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 function Header() {
+  const { data: session } = useSession();
+
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
-      <div className="flex justify-between max-w-6x1 mx-5 lg:mx-auto">
+      <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
         <div className="relative hidden lg:inline-grid w-24 cursor-pointer">
           <Image
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/800px-Instagram_logo.svg.png"
@@ -48,23 +51,31 @@ function Header() {
         <div className="flex items-center justify-end space-x-4">
           <HomeIcon className="navBtn" />
           <MenuIcon className="h-6 md:hidden cursor-pointer" />
-          <div className="relative navBtn">
-            <PaperAirplaneIcon className="navBtn rotate-45" />
-            <div
-              className="absolute -top-2 -right-2 text-xs w-4 h-4 bg-red-500 rounded-full 
-            flex items-center justify-center animate-pulse"
-            >
-              3
-            </div>
-          </div>
-          <PlusCircleIcon className="navBtn" />
-          <UserGroupIcon className="navBtn" />
-          <HeartIcon className="navBtn" />
-          <img
-            src="https://scontent.fskp2-1.fna.fbcdn.net/v/t1.6435-9/84610106_10216461897806928_7336277515683495936_n.jpg?_nc_cat=102&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=s0jhAuSbBv4AX8NE6cy&_nc_ht=scontent.fskp2-1.fna&oh=ff759c7f6e3de40450f9690b7ae663d1&oe=61AF6289"
-            alt="profile pic"
-            className="h-8 rounded-full cursor-pointer"
-          />
+
+          {session ? (
+            <>
+              <div className="relative navBtn">
+                <PaperAirplaneIcon className="navBtn rotate-45" />
+                <div
+                  className="absolute -top-2 -right-2 text-xs w-4 h-4 bg-red-500 rounded-full 
+ flex items-center justify-center animate-pulse"
+                >
+                  3
+                </div>
+              </div>
+              <PlusCircleIcon className="navBtn" />
+              <UserGroupIcon className="navBtn" />
+              <HeartIcon className="navBtn" />
+              <img
+                onClick={signOut}
+                src={session.user?.image}
+                alt="profile pic"
+                className="h-8 rounded-full cursor-pointer"
+              />
+            </>
+          ) : (
+            <button onClick={signIn}>Sign In</button>
+          )}
         </div>
       </div>
     </div>
